@@ -3,7 +3,11 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-require_once WP_PLUGIN_DIR . '/woocommerce/includes/admin/settings/class-wc-settings-page.php' ;
+$woocommerceFile = WP_PLUGIN_DIR . '/woocommerce/includes/admin/settings/class-wc-settings-page.php';
+if (!file_exists($woocommerceFile)) {
+  exit('Please ensure that WooCommerce has been installed and activated on your site before activating the MoreTyme Widget for WooCommerce');
+}
+require_once $woocommerceFile;
 class PayFast_Moretyme_Enable_Settings extends WC_Settings_Page {
 	public function __construct() {
 		$this->init();
@@ -44,6 +48,11 @@ function payfast_moretyme_get_setting() {
           border: 1px solid #ccc;
       }
 
+      div#pf-mt-preview > div {
+        padding-right: 2rem!important;
+        padding-left: 2rem!important;
+      }
+
       .tab-col {
           max-width: 33%;
           display: inline-block;
@@ -56,9 +65,19 @@ function payfast_moretyme_get_setting() {
           max-width: 50%;
         }
       }
+
+<?php
+      if (get_option('woocommerce_currency') != 'ZAR') {
+        echo ".woocommerce-save-button {
+          display: none!important;
+        }";
+      }
+      
+?>
     </style>
 		<script type="text/javascript">
 		jQuery(function($){
+
       $('.pf-mt-input').change(function() {
         let opts = {
           amount: 500,
@@ -74,11 +93,11 @@ function payfast_moretyme_get_setting() {
         if (opts['theme'] == 'dark') {
           $('#pf-mt-preview').css('background-color', '#000000');
           $('#payfast-logo-type').show();
-		  $('#payfast-font-color').hide();
+          $('#payfast-font-color').hide();
         } else {
           $('#pf-mt-preview').css('background-color', '#FFFFFF');
           $('#payfast-logo-type').hide();
-		  $('#payfast-font-color').show();
+          $('#payfast-font-color').show();
         }
 
         if (opts['size'] != 'small') {
@@ -101,6 +120,9 @@ function payfast_moretyme_get_setting() {
 		});
 	</script>
     <section>
+<?php 
+      if (get_option('woocommerce_currency') == 'ZAR') {
+?>
         <h1>MoreTyme</h1>
         <h3>MoreTyme Add-ons for Your Website</h3>
         <p>Create a personalised widget for your product web pages and increase sales on your site. The widget informs your customers how much they need to pay upfront and for the next two payments with MoreTyme.</p>
@@ -185,11 +207,17 @@ function payfast_moretyme_get_setting() {
                 <input type="color" name="link-color" class="pf-mt-input" value="<?php echo $settings['link-color'] ?: '#177EE8' ?>">
             </div>
         </div>
-    </section>
-	<?php
-}
-?>
 <?php
+      } else {
+?>
+          <h3>Please set your Shop Currency to ZAR in order to use this feature.</h3>
+          <h4>To change your shop currency settings go to: WooCommerce > Settings > General > Currency Options , and select ZAR from the Currency drop down.</h4>
+<?php
+      }
+?>
+    </section>
+<?php
+}
 
 if (!empty($_POST) && isset($_POST['save'])) {
     $opts = array(
@@ -209,6 +237,5 @@ if (!empty($_POST) && isset($_POST['save'])) {
       }
     }
 }
-
 new PayFast_Moretyme_Enable_Settings();
 ?>
