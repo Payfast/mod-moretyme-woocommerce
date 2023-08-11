@@ -2,9 +2,6 @@
 
 Payfast MoreTyme Module for WooCommerce
 
-_________________________________________________________________________
-
-
 Integrate the plugin via your WordPress dashboard:
 
 1. Download the module and unzip its contents.
