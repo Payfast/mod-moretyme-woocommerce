@@ -1,4 +1,4 @@
-# moretyme-woocommerce
+# mod-moretyme-woocommerce
 
 Payfast MoreTyme Module for WooCommerce
 
